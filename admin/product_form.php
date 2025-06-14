@@ -174,17 +174,40 @@ if (!is_dir($upload_dir)) {
             border: 1px solid #ddd;
             border-radius: 8px;
         }
-
-        .btn {
-            width: 100%; padding: 0.75rem; background: #D2691E; color: white;
-            border: none; border-radius: 8px; font-size: 1rem; cursor: pointer;
-            transition: background-color 0.3s;
+        .button-container {
+            display:flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            gap: 1rem;
         }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 12px 24px; 
+            gap: 8px;
+            background: #D2691E; 
+            color: white;
+            border: none; 
+            border-radius: 12px; 
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            white-space: nowrap;
+        }  
         .btn:hover { background: #B8860B; }
         .btn-back {
             background: #6c757d;
-            margin-top: 1rem;
         }
+        .btn-back svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+        }
+        
         .btn-back:hover { background: #5a6268; }
 
         .alert {
@@ -275,9 +298,12 @@ if (!is_dir($upload_dir)) {
                     <label for="stok">Stok</label>
                     <input type="number" id="stok" name="stok" min="0" value="<?php echo htmlspecialchars($product_data['stok']); ?>" required>
                 </div>
-                
-                <button type="submit" class="btn"><?php echo $is_edit ? 'Perbarui Produk' : 'Tambah Produk'; ?></button>
-                <a href="produk_manage.php" class="btn btn-back">Kembali ke Kelola Produk</a>
+                <div class="button-container">
+                    <a href="produk_manage.php" class="btn btn-back">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                        </svg>Kembali</a>
+                    <button type="submit" class="btn"><?php echo $is_edit ? 'Perbarui Produk' : 'Tambah Produk'; ?></button>
+                </div>
             </form>
         </div>
     </main>
