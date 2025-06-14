@@ -83,7 +83,7 @@ $stmt = $conn->prepare("
     SELECT p.id, u.nama as user_nama, p.tanggal_pesan, p.total_harga, p.status, p.alamat, p.metode_pembayaran, p.nama_penerima
     FROM pesanan p
     JOIN users u ON p.id_user = u.id
-    ORDER BY p.tanggal_pesan DESC
+    ORDER BY p.tanggal_pesan
 ");
 $stmt->execute();
 $orders = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
