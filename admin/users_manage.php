@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 }
 
 // Ambil semua pengguna (kecuali admin lain, opsional)
-$result = $conn->query("SELECT id, nama, email, role, created_at FROM users ORDER BY created_at DESC");
+$result = $conn->query("SELECT id, nama, email, role, created_at FROM users ORDER BY created_at");
 $users = $result->fetch_all(MYSQLI_ASSOC);
 $conn->close();
 ?>
@@ -43,21 +43,86 @@ $conn->close();
     <title>Kelola Pengguna - Dashboard Admin</title>
     <style>
         /* Gaya dasar dari dashboard admin (salin dari admin/dashboard.php) */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f8f5f0; line-height: 1.6; }
-        header { background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%); color: white; padding: 1rem 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        nav { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 2rem; }
-        .logo { font-size: 1.5rem; font-weight: bold; }
-        .nav-links { display: flex; list-style: none; gap: 2rem; }
-        .nav-links a { color: white; text-decoration: none; transition: color 0.3s; }
-        .nav-links a:hover { color: #f0e68c; }
-        .nav-user { display: flex; gap: 1rem; align-items: center; }
-        .nav-user a { color: white; text-decoration: none; padding: 0.5rem 1rem; border: 1px solid rgba(255,255,255,0.3); border-radius: 5px; transition: all 0.3s; }
-        .nav-user a:hover { background: rgba(255,255,255,0.1); }
+        * {
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box;
+        }
+
+        html {
+            height: 100%;
+        }
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f8f5f0;
+            line-height: 1.6;
+
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+        }
+        header {
+            background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover {
+            color: #f0e68c;
+        }
+        .nav-user {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        .nav-user a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 5px; transition: all 0.3s;
+        }
+        .nav-user a:hover {
+            background: rgba(255,255,255,0.1);
+        }
         
-        main { max-width: 1200px; margin: 2rem auto; padding: 0 2rem; }
-        .page-header { text-align: center; margin-bottom: 2rem; }
-        .page-header h1 { color: #8B4513; font-size: 2.5rem; margin-bottom: 0.5rem; }
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            flex-grow: 1;
+        }
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .page-header h1 {
+            color: #8B4513;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
 
         /* Gaya untuk Tabel Pengguna */
         .user-table-container {
@@ -95,30 +160,81 @@ $conn->close();
             cursor: pointer;
             transition: background-color 0.3s;
         }
-        .btn-delete { background-color: #dc3545; color: white; border: none; }
-        .btn-delete:hover { background-color: #c82333; }
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+        }
+        .btn-delete:hover {
+            background-color: #c82333;
+        }
         
         .alert {
-            padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem; text-align: center;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
         }
-        .alert-error { background: #fee; color: #c33; border: 1px solid #fcc; }
-        .alert-success { background: #efe; color: #363; border: 1px solid #cfc; }
+        .alert-error {
+            background: #fee;
+            color: #c33;
+            border: 1px solid #fcc;
+        }
+        .alert-success {
+            background: #efe;
+            color: #363;
+            border: 1px solid #cfc;
+        }
 
         /* Footer */
-        footer { background: #8B4513; color: white; text-align: center; padding: 2rem; margin-top: 2rem; }
-        .footer-content { max-width: 1200px; margin: 0 auto; }
-        .footer-links { display: flex; justify-content: center; gap: 2rem; margin-bottom: 1rem; flex-wrap: wrap; }
-        .footer-links a { color: white; text-decoration: none; }
-        .footer-links a:hover { color: #f0e68c; }
+        footer {
+            background: #8B4513;
+            color: white;
+            text-align: center; 
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem; 
+            flex-wrap: wrap;
+        }
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+        }
+        .footer-links a:hover {
+            color: #f0e68c;
+        }
 
         /* Responsive */
         @media (max-width: 768px) {
-            nav { flex-direction: column; gap: 1rem; padding: 1rem; }
-            .nav-links { gap: 1rem; }
-            .page-header h1 { font-size: 2rem; }
-            main { padding: 0 1rem; }
-            table { font-size: 0.85rem; }
-            th, td { padding: 0.75rem; }
+            nav {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            .nav-links {
+                gap: 1rem;
+            }
+            .page-header h1 {
+                font-size: 2rem;
+            }
+            main {
+                padding: 0 1rem;
+            }
+            table {
+                font-size: 0.85rem;
+            }
+            th, td {
+                padding: 0.75rem;
+            }
         }
     </style>
 </head>
