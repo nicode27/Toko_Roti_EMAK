@@ -35,10 +35,19 @@ $conn->close();
             box-sizing: border-box;
         }
 
+        html {
+            height: 100%;
+        }
+
+
+
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
             background: #f8f5f0;
             line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height:100%;
         }
 
         /* Header */
@@ -103,6 +112,7 @@ $conn->close();
             max-width: 1000px;
             margin: 2rem auto;
             padding: 0 2rem;
+            flex-grow: 1;
         }
 
         .page-header {
@@ -118,7 +128,7 @@ $conn->close();
 
         .admin-dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(3, minmax(280px, 1fr));
             gap: 2rem;
             margin-bottom: 2rem;
         }
@@ -211,6 +221,10 @@ $conn->close();
 
             main {
                 padding: 0 1rem;
+            }
+
+            .admin-dashboard-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
