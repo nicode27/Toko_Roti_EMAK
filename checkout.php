@@ -53,13 +53,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && empty($error)) {
         try {
             // 1. Masukkan data ke tabel pesanan
             $status_pesanan_db = 'belum diproses'; // Sesuai ENUM di DB Anda
+            
             // Tambahkan kolom baru 'detail_pembayaran' ke tabel pesanan jika ingin menyimpannya
             // Saat ini, kita hanya menyimpannya sebagai bagian dari alamat_pengiriman/catatan jika perlu.
             // Untuk skema database yang ada, saya tidak menambahkan kolom baru ke pesanan.
             // Anda bisa menambahkannya jika diperlukan: ALTER TABLE pesanan ADD COLUMN detail_pembayaran TEXT NULL;
 
-            $stmt = $conn->prepare("INSERT INTO pesanan (id_user, nama_penerima, alamat, total_harga, status, metode_pembayaran, detail_pembayaran, tanggal_pesan) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())");
-            $stmt->bind_param("isdssss", $user_id, $nama_penerima, $alamat_pengiriman, $total, $status_pesanan_db, $metode_pembayaran, $detail_pembayaran);
+            
+            // $stmt = $conn->prepare("INSERT INTO pesanan (id_user, nama_penerima, alamat, total_harga, status, metode_pembayaran, detail_pembayaran, tanggal_pesan) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())");
+            // $stmt->bind_param("isdssss", $user_id, $nama_penerima, $alamat_pengiriman, $total, $status_pesanan_db, $metode_pembayaran, $detail_pembayaran);
+            // PERBAIKAN DI BAWAH INI
+            $stmt = $conn->prepare("INSERT INTO pesanan (id_user, nama_penerima, alamat, total_harga, status, metode_pembayaran, detail_pembayaran, tanggal_pesan) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())");            
+            // Sebelum diperbaiki: $stmt->bind_param("isdssss", ...);
+            // Kode yang Benar (menambahkan 's' untuk alamat):
+            $stmt->bind_param("issdsss", $user_id, $nama_penerima, $alamat_pengiriman, $total, $status_pesanan_db, $metode_pembayaran, $detail_pembayaran);
             $stmt->execute();
             $order_id = $conn->insert_id;
             $stmt->close();
@@ -72,28 +79,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && empty($error)) {
             // Masukkan log status awal
             $catatan_awal = "Pesanan dibuat dengan metode pembayaran: " . $metode_pembayaran;
             $stmt_log_status = $conn->prepare("INSERT INTO riwayat_status_pesanan (id_pesanan, status_lama, status_baru, catatan) VALUES (?, ?, ?, ?)");
-            $stmt_log_status->bind_param("isss", $order_id, $status_pesanan_db, $status_pesanan_db, $catatan_awal); // status_lama dan status_baru sama untuk log pertama
+            $stmt_log_status->bind_param("isss", $order_id, $status_pesanan_db, $status_pesanan_db, $catatan_awal);
             $stmt_log_status->execute();
             $stmt_log_status->close();
 
             // 2. Masukkan item keranjang ke pesanan_detail & kurangi stok produk
-            foreach ($cart_items as $item) {
-                $stmt = $conn->prepare("INSERT INTO pesanan_detail (id_pesanan, id_produk, jumlah, harga) VALUES (?, ?, ?, ?)");
-                $stmt->bind_param("iiid", $order_id, $item['product_id'], $item['jumlah'], $item['harga']);
-                $stmt->execute();
-                $stmt->close();
+             foreach ($cart_items as $item) {
+                $stmt_detail = $conn->prepare("INSERT INTO pesanan_detail (id_pesanan, id_produk, jumlah, harga) VALUES (?, ?, ?, ?)");
+                $stmt_detail->bind_param("iiid", $order_id, $item['product_id'], $item['jumlah'], $item['harga']);
+                $stmt_detail->execute();
+                $stmt_detail->close();
 
-                $stmt = $conn->prepare("UPDATE produk SET stok = stok - ? WHERE id = ?");
-                $stmt->bind_param("ii", $item['jumlah'], $item['product_id']);
-                $stmt->execute();
-                $stmt->close();
+                $stmt_stok = $conn->prepare("UPDATE produk SET stok = stok - ? WHERE id = ?");
+                $stmt_stok->bind_param("ii", $item['jumlah'], $item['product_id']);
+                $stmt_stok->execute();
+                $stmt_stok->close();
             }
 
             // 3. Kosongkan keranjang
-            $stmt = $conn->prepare("DELETE FROM keranjang WHERE id_user = ?");
-            $stmt->bind_param("i", $user_id);
-            $stmt->execute();
-            $stmt->close();
+            $stmt_delete_cart = $conn->prepare("DELETE FROM keranjang WHERE id_user = ?");
+            $stmt_delete_cart->bind_param("i", $user_id);
+            $stmt_delete_cart->execute();
+            $stmt_delete_cart->close();
 
             // Commit transaksi
             $conn->commit();
