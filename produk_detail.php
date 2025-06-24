@@ -365,22 +365,17 @@ $conn->close();
 
     <main>
         <div class="product-detail-container">
-        <div class="product-detail-image" style="background: none; display: flex; align-items: center; justify-content: center;">
-    <?php 
-    $imagePath = 'uploads/products/' . htmlspecialchars($product['gambar']);
-    if ($product['gambar'] && file_exists($imagePath)) {
-        echo '<img src="' . htmlspecialchars($imagePath) . '" alt="' . htmlspecialchars($product['nama_produk']) . '" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 10px;">';
-    } else {
-        // Fallback jika tidak ada gambar atau gambar tidak ditemukan
-        $emoji = '🍞'; // Default emoji
-        if (strpos(strtolower($product['nama_produk']), 'cokelat') !== false) $emoji = '🍫';
-        elseif (strpos(strtolower($product['nama_produk']), 'pisang') !== false) $emoji = '🍌';
-        elseif (strpos(strtolower($product['nama_produk']), 'croissant') !== false) $emoji = '🥐';
-        elseif (strpos(strtolower($product['nama_produk']), 'donat') !== false) $emoji = '🍩';
-        echo '<span style="font-size: 6rem; color: #8B4513;">' . $emoji . '</span>';
-    }
-    ?>
-</div>
+        <div class="product-detail-image" style="background: none; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+            <?php
+            $imagePath = 'uploads/products/' . htmlspecialchars($product['gambar']);
+            if ($product['gambar'] && file_exists($imagePath)) {
+                echo '<img src="' . htmlspecialchars($imagePath) . '" alt="' . htmlspecialchars($product['nama_produk']) . '" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 10px;">';
+            } else {
+                // Placeholder atau biarkan kosong jika tidak ada gambar
+                echo '<span style="color: #ccc; font-size: 1.5rem;">No Image Available</span>'; // Teks placeholder sederhana
+            }
+            ?>
+        </div>
             <div class="product-detail-info">
                 <div class="product-detail-name"><?php echo htmlspecialchars($product['nama_produk']); ?></div>
                 <div class="product-detail-description"><?php echo htmlspecialchars($product['deskripsi']); ?></div>

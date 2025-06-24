@@ -388,22 +388,17 @@ $conn->close();
                 <div class="product-grid">
                     <?php foreach ($featured_products as $produk): ?>
                         <div class="product-card">
-                        <div class="product-image" style="background: none; display: flex; align-items: center; justify-content: center;">
-    <?php 
-    $imagePath = 'uploads/products/' . htmlspecialchars($produk['gambar']);
-    if ($produk['gambar'] && file_exists($imagePath)) {
-        echo '<img src="' . htmlspecialchars($imagePath) . '" alt="' . htmlspecialchars($produk['nama_produk']) . '" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 10px;">';
-    } else {
-        // Fallback jika tidak ada gambar atau gambar tidak ditemukan
-        $emoji = '🍞'; // Default emoji
-        if (strpos(strtolower($produk['nama_produk']), 'cokelat') !== false) $emoji = '🍫';
-        elseif (strpos(strtolower($produk['nama_produk']), 'pisang') !== false) $emoji = '🍌';
-        elseif (strpos(strtolower($produk['nama_produk']), 'croissant') !== false) $emoji = '🥐';
-        elseif (strpos(strtolower($produk['nama_produk']), 'donat') !== false) $emoji = '🍩';
-        echo '<span style="font-size: 3rem; color: #8B4513;">' . $emoji . '</span>';
-    }
-    ?>
-</div>
+                        <div class="product-image" style="background: none; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                            <?php
+                            $imagePath = 'uploads/products/' . htmlspecialchars($produk['gambar']);
+                            if ($produk['gambar'] && file_exists($imagePath)) {
+                                echo '<img src="' . htmlspecialchars($imagePath) . '" alt="' . htmlspecialchars($produk['nama_produk']) . '" style="width: 100%; height: 100%; object-fit: cover;">';
+                            } else {
+                                // Placeholder atau biarkan kosong jika tidak ada gambar
+                                echo '<span style="color: #ccc; font-size: 1.2rem;">No Image</span>'; // Teks placeholder sederhana
+                            }
+                            ?>
+                        </div>
                             <div class="product-info">
                                 <div class="product-name"><?php echo htmlspecialchars($produk['nama_produk']); ?></div>
                                 <div class="product-price"><?php echo formatRupiah($produk['harga']); ?></div>
