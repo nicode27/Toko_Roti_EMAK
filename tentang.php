@@ -192,7 +192,7 @@ require_once 'config.php'; // This must be the very first line.
 <body>
     <header>
         <nav>
-            <div class="logo">🍞 Toko Roti Emak</div>
+            <div class="logo">Toko Roti Emak</div>
             <ul class="nav-links">
                 <li><a href="index.php">Beranda</a></li>
                 <li><a href="produk.php">Produk</a></li>
@@ -243,7 +243,7 @@ require_once 'config.php'; // This must be the very first line.
                 <a href="tentang.php">Tentang</a>
                 <a href="kontak.php">Kontak</a>
             </div>
-            <p>© 2024 Toko Roti Emak. Dibuat dengan ❤️ untuk keluarga Indonesia.</p>
+            <p>© 2024 Toko Roti Emak. Dibuat dengan cinta untuk keluarga Indonesia.</p>
         </div>
     </footer>
 </body>

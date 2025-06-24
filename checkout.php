@@ -245,7 +245,7 @@ $conn->close();
 <body>
     <header>
         <nav>
-            <div class="logo">🍞 Toko Roti Emak</div>
+            <div class="logo">Toko Roti Emak</div>
             <ul class="nav-links">
                 <li><a href="index.php">Beranda</a></li>
                 <li><a href="produk.php">Produk</a></li>

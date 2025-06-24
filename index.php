@@ -329,7 +329,7 @@ $conn->close();
 <body>
     <header>
         <nav>
-            <div class="logo">🍞 Toko Roti Emak</div>
+            <div class="logo">Toko Roti Emak</div>
             <ul class="nav-links">
                 <li><a href="index.php">Beranda</a></li>
                 <li><a href="produk.php">Produk</a></li>
@@ -351,7 +351,7 @@ $conn->close();
 
     <section class="hero">
         <div class="hero-content">
-            <h1>🍞 Selamat Datang di Toko Roti Emak</h1>
+            <h1>Selamat Datang di Toko Roti Emak</h1>
             <p>Nikmati kelezatan roti segar yang dipanggang dengan cinta setiap hari. Dibuat dari bahan-bahan berkualitas untuk keluarga tercinta.</p>
             <div class="hero-cta">
                 <a href="produk.php" class="btn btn-primary">Lihat Produk</a>

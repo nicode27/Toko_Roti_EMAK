@@ -316,7 +316,7 @@ $conn->close();
                 <a href="dashboard.php">Dashboard Admin</a>
                 <a href="../index.php">Kembali ke Situs</a>
             </div>
-            <p>© 2024 Toko Roti Emak. Dibuat dengan ❤️ untuk keluarga Indonesia.</p>
+            <p>© 2024 Toko Roti Emak. Dibuat dengan cinta untuk keluarga Indonesia.</p>
         </div>
     </footer>
 </body>
