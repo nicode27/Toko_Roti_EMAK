@@ -148,6 +148,7 @@ $conn->close();
             font-size: 14px;
             transition: background-color 0.2s ease;
             border-bottom: 1px solid #f0f0f0;
+            background-color: lightsalmon;
         }
 
         .dropdown-item:last-child {
@@ -156,6 +157,10 @@ $conn->close();
 
         .dropdown-item:hover {
             background-color: #f8f9fa;
+        }
+
+        .nav-item.dropdown a {
+            color: black;
         }
 
         /* Hero Section */
@@ -563,17 +568,6 @@ $conn->close();
                 menu.addEventListener('click', function(e) {
                     e.stopPropagation();
                 });
-            });
-        });
-
-        // Add some demo functionality for dropdown items
-        document.querySelectorAll('.dropdown-item').forEach(item => {
-            item.addEventListener('click', function(e) {
-                if (!this.classList.contains('logout')) {
-                    e.preventDefault();
-                    const itemText = this.textContent.trim();
-                    alert(`Navigasi ke: ${itemText}`);
-                }
             });
         });
     </script>
