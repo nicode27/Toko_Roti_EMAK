@@ -53,15 +53,19 @@ $conn->close();
             display: flex;
             list-style: none;
             gap: 2rem;
+            align-items: center;
         }
 
         .nav-links a {
             color: white;
             text-decoration: none;
             transition: color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
         }
 
         .nav-links a:hover {
+            background: rgba(255,255,255,0.1);
             color: #f0e68c;
         }
 
@@ -83,7 +87,8 @@ $conn->close();
         .nav-user a:hover {
             background: rgba(255,255,255,0.1);
         }
-        /* Dropdown */
+
+        /* Dropdown Styles */
         .dropdown {
             position: relative;
         }
@@ -141,14 +146,14 @@ $conn->close();
         }
 
         .dropdown-item {
-            display: block;
+            display: flex;
+            align-items: center;
             padding: 12px 20px;
             color: #333;
             text-decoration: none;
             font-size: 14px;
             transition: background-color 0.2s ease;
             border-bottom: 1px solid #f0f0f0;
-            background-color: lightsalmon;
         }
 
         .dropdown-item:last-child {
@@ -159,8 +164,61 @@ $conn->close();
             background-color: #f8f9fa;
         }
 
-        .nav-item.dropdown a {
-            color: black;
+        .profile-dropdown {
+            position: relative;
+        }
+
+        .profile-toggle {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid white;
+            object-fit: cover;
+        }
+
+        .profile-name {
+            font-weight: 500;
+            margin-left: 5px;
+        }
+
+        .profile-dropdown .dropdown-menu {
+            right: 0;
+            left: auto;
+            min-width: 200px;
+        }
+
+        .dropdown-item.logout {
+            color: #dc3545;
+            font-weight: 500;
+        }
+
+        .dropdown-item.logout:hover {
+            background-color: #fff5f5;
+        }
+
+        /* Icon styles */
+        .icon {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
         }
 
         /* Hero Section */
@@ -323,6 +381,18 @@ $conn->close();
             justify-content: center;
             font-size: 3rem;
             color: #8B4513;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.05);
         }
 
         .product-info {
@@ -371,10 +441,27 @@ $conn->close();
         .footer-links a {
             color: white;
             text-decoration: none;
+            transition: color 0.3s;
         }
 
         .footer-links a:hover {
             color: #f0e68c;
+        }
+
+        /* Loading State */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #8B4513;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         /* Responsive */
@@ -387,6 +474,8 @@ $conn->close();
 
             .nav-links {
                 gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
             }
 
             .hero-content h1 {
@@ -401,6 +490,30 @@ $conn->close();
             .product-grid {
                 grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
                 gap: 1rem;
+            }
+
+            .profile-name {
+                display: none;
+            }
+
+            .dropdown-menu {
+                left: auto;
+                right: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .features h2, .products-section h2 {
+                font-size: 2rem;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .product-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -443,12 +556,43 @@ $conn->close();
                             </a>
                         </div>
                     </li>
+                    <!-- Profile Dropdown -->
+                    <li class="nav-item profile-dropdown" id="profileDropdown">
+                        <button class="profile-toggle">
+                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=70&h=70&q=80" alt="Profile" class="profile-avatar">
+                            <span class="profile-name">Park Hyungseok</span>
+                            <svg class="icon" style="width: 14px; height: 14px;" viewBox="0 0 24 24">
+                                <path d="M7,10L12,15L17,10H7Z"/>
+                            </svg>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a href="#" class="dropdown-item">
+                                <svg class="icon" style="width: 16px; height: 16px; margin-right: 8px;" viewBox="0 0 24 24">
+                                    <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>
+                                </svg>
+                                Profil Saya
+                            </a>
+                            <a href="#" class="dropdown-item">
+                                <svg class="icon" style="width: 16px; height: 16px; margin-right: 8px;" viewBox="0 0 24 24">
+                                    <path d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.22,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.22,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.68 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z"/>
+                                </svg>
+                                Pengaturan
+                            </a>
+                            <a href="#" class="dropdown-item logout" onclick="handleLogout()">
+                                <svg class="icon" style="width: 16px; height: 16px; margin-right: 8px;" viewBox="0 0 24 24">
+                                    <path d="M16,17V14H9V10H16V7L21,12L16,17M14,2A2,2 0 0,1 16,4V6H14V4H5V20H14V18H16V20A2,2 0 0,1 14,22H5A2,2 0 0,1 3,20V4A2,2 0 0,1 5,2H14Z"/>
+                                </svg>
+                                Keluar
+                            </a>
+                        </div>
+                    </li>
                 </ul>
-                    <a href="profile.php">Halo, <?php echo htmlspecialchars($_SESSION['nama']); ?>!</a> <a href="logout.php">Keluar</a>
+
+                    <!-- <a href="profile.php">Halo, <?php echo htmlspecialchars($_SESSION['nama']); ?>!</a> <a href="logout.php">Keluar</a>
                 <?php else: ?>
                     <a href="login.php">Masuk</a>
                     <a href="register.php">Daftar</a>
-                <?php endif; ?>
+                <?php endif; ?> -->
             </div>
         </nav>
     </header>
@@ -562,6 +706,15 @@ $conn->close();
                     }
                 });
             });
+
+            // Logout function
+            function handleLogout() {
+                if (confirm('Apakah Anda yakin ingin keluar?')) {
+                    alert('Anda telah berhasil keluar!');
+                // Redirect ke halaman login atau homepage
+                // window.location.href = '/login';
+            }
+        }
             
             // Prevent dropdown from closing when clicking inside menu
             document.querySelectorAll('.dropdown-menu').forEach(menu => {
