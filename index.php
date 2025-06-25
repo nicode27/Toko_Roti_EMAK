@@ -1,6 +1,5 @@
 <?php
 require_once 'config.php';
-
 // Get featured products (limit 6)
 $conn = getConnection();
 $result = $conn->query("SELECT * FROM produk WHERE stok > 0 ORDER BY created_at DESC LIMIT 6");
@@ -661,9 +660,9 @@ $conn->close();
                 </div>
 
                 <!-- Profile Dropdown -->
-                <div class="profile-dropdown" id="profileDropdown">
+                <div class="dropdown profile-dropdown" id="profileDropdown">
                     <button class="profile-toggle">
-                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=70&h=70&q=80" alt="Profile" class="profile-avatar">
+                        <img src="<?php echo ($user_data['foto_profil'] && file_exists($upload_dir . $user_data['foto_profil'])) ? $upload_dir . htmlspecialchars($user_data['foto_profil']) : $upload_dir . 'default.png'; ?>" alt="Profile" class="profile-avatar">
                         <span class="profile-name"><?php echo $_SESSION['nama']; ?></span>
                         <svg class="icon" style="width: 14px; height: 14px;" viewBox="0 0 24 24">
                             <path d="M7,10L12,15L17,10H7Z"/>
