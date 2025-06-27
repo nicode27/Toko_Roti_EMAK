@@ -198,12 +198,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <p>Masuk ke Akun Anda</p>
         </div>
         
-        <div class="demo-info">
-            <h4>Demo Login:</h4>
-            <p><strong>Admin:</strong> admin@tokorotiemak.com / password</p>
-            <p><strong>User:</strong> Daftar akun baru atau gunakan akun yang sudah dibuat</p>
-        </div>
-        
         <?php if ($error): ?>
             <div class="alert"><?php echo $error; ?></div>
         <?php endif; ?>

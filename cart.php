@@ -115,8 +115,17 @@ $conn->close();
     <style>
         /* Gaya dari cart.php yang sudah ada */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f8f5f0; line-height: 1.6; }
-        /* Header */
+        html {
+            height: 100%; /* Ensure html takes full height */
+        }
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            background: #f8f5f0; 
+            line-height: 1.6; 
+            display: flex; /* Enable flexbox */
+            flex-direction: column; /* Stack children vertically */
+            min-height: 100vh; /* Ensure body takes at least full viewport height */
+        }
         header {
             background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
             color: white;
@@ -318,7 +327,12 @@ $conn->close();
             flex-shrink: 0;
         }
 
-        main { max-width: 1000px; margin: 2rem auto; padding: 0 2rem; }
+        main { 
+            max-width: 1000px; 
+            margin: 2rem auto; 
+            padding: 0 2rem; 
+            flex-grow: 1; /* Allow main content to grow and push footer */
+        }
         .page-header { text-align: center; margin-bottom: 2rem; }
         .page-header h1 { color: #8B4513; font-size: 2.5rem; margin-bottom: 0.5rem; }
         

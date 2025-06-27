@@ -3,7 +3,7 @@ require_once 'config.php';
 
 // Initialize user data and upload directory
 $user_data = [];
-$upload_dir = 'uploads/profiles/';
+$upload_dir = 'uploads/profiles/'; // For profile pictures
 
 // Fetch user data if logged in
 if (isLoggedIn()) {
@@ -93,8 +93,17 @@ $conn->close();
     <style>
         /* Gaya dasar - disalin dari file lain untuk konsistensi */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f8f5f0; line-height: 1.6; }
-        /* Header */
+        html {
+            height: 100%; /* Ensure html takes full height */
+        }
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            background: #f8f5f0; 
+            line-height: 1.6; 
+            display: flex; /* Enable flexbox */
+            flex-direction: column; /* Stack children vertically */
+            min-height: 100vh; /* Ensure body takes at least full viewport height */
+        }
         header {
             background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
             color: white;
@@ -296,7 +305,12 @@ $conn->close();
             flex-shrink: 0;
         }
         
-        main { max-width: 1000px; margin: 2rem auto; padding: 0 2rem; }
+        main { 
+            max-width: 1000px; 
+            margin: 2rem auto; 
+            padding: 0 2rem; 
+            flex-grow: 1; /* Allow main content to grow and push footer */
+        }
         .page-header { text-align: center; margin-bottom: 2rem; }
         .page-header h1 { color: #8B4513; font-size: 2.5rem; }
 
@@ -334,12 +348,18 @@ $conn->close();
         .status-timeline .status-header { display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
         .status-timeline .note { font-style: italic; color: #666; font-size: 0.9em; margin-top: 4px; }
         
-        /* Footer */
-        footer { background: #8B4513; color: white; text-align: center; padding: 2rem; margin-top: 2rem; }
+        footer { 
+            background: #8B4513; 
+            color: white; 
+            text-align: center; 
+            padding: 2rem; 
+            margin-top: 2rem; 
+        } /* Footer CSS based on index.php and general standards */
         .footer-content { max-width: 1200px; margin: 0 auto; }
         .footer-links { display: flex; justify-content: center; gap: 2rem; margin-bottom: 1rem; flex-wrap: wrap; }
         .footer-links a { color: white; text-decoration: none; }
-        .footer-links a:hover { color: #f0e68c; }    </style>
+        .footer-links a:hover { color: #f0e68c; }
+    </style>
 </head>
 <body>
     <header>
@@ -481,7 +501,7 @@ $conn->close();
             <?php endif; ?>
         </div>
     </main>
-    
+
     <footer>
         <div class="footer-content">
             <div class="footer-links">
@@ -493,7 +513,7 @@ $conn->close();
             <p>© 2024 Toko Roti Emak. Dibuat dengan cinta untuk keluarga Indonesia.</p>
         </div>
     </footer>
-
+    
     <script>
         function toggleOrderDetails(button) {
             const detailsDiv = button.nextElementSibling;

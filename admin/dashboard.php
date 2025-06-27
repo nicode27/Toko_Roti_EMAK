@@ -12,7 +12,7 @@ $conn = getConnection();
 $total_products_query = $conn->query("SELECT COUNT(*) as total FROM produk");
 $total_products = $total_products_query->fetch_assoc()['total'];
 
-$total_users_query = $conn->query("SELECT COUNT(*) as total FROM users WHERE role = 'customer'");
+$total_users_query = $conn->query("SELECT COUNT(*) as total FROM users WHERE role != 'admin'");
 $total_users = $total_users_query->fetch_assoc()['total'];
 
 $total_orders_query = $conn->query("SELECT COUNT(*) as total FROM pesanan");

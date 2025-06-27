@@ -250,7 +250,7 @@ $conn->close();
 
         /* Hero Section */
         .hero {
-            background: linear-gradient(rgba(139, 69, 19, 0.6), rgba(210, 105, 30, 0.5)), url('img/back.jpg');
+            background: linear-gradient(rgba(139, 69, 19, 0.4), rgba(210, 105, 30, 0.3)), url('img/back.jpg');
             background-size: cover;
             background-position: center;
             color: white;
