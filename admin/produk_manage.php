@@ -201,10 +201,6 @@ $conn->close();
 
     <footer>
         <div class="footer-content">
-            <div class="footer-links">
-                <a href="dashboard.php">Dashboard Admin</a>
-                <a href="../index.php">Kembali ke Situs</a>
-            </div>
             <p>© 2024 Toko Roti Emak. Dibuat dengan cinta untuk keluarga Indonesia.</p>
         </div>
     </footer>

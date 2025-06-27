@@ -183,7 +183,7 @@ $conn->close();
                 <li><a href="orders_manage.php">Kelola Pesanan</a></li>
             </ul>
             <div class="nav-user">
-                <span>Halo, Admin <?php echo $_SESSION['nama']; ?>!</span>
+                <span>Halo, <?php echo $_SESSION['nama']; ?>!</span>
                 <a href="../logout.php">Keluar</a>
             </div>
         </nav>
@@ -304,10 +304,6 @@ $conn->close();
 
     <footer>
         <div class="footer-content">
-            <div class="footer-links">
-                <a href="dashboard.php">Dashboard Admin</a>
-                <a href="../index.php">Kembali ke Situs</a>
-            </div>
             <p>© 2024 Toko Roti Emak. Dibuat dengan cinta untuk keluarga Indonesia.</p>
         </div>
     </footer>

@@ -1,5 +1,26 @@
 <?php
-require_once 'config.php'; // This must be the very first line.
+require_once 'config.php';
+
+// Initialize user data and upload directory
+$user_data = [];
+$upload_dir = 'uploads/profiles/'; // For profile pictures
+
+// Fetch user data if logged in
+if (isLoggedIn()) {
+    $conn_local = getConnection();
+    $stmt_user = $conn_local->prepare("SELECT nama, foto_profil FROM users WHERE id = ?");
+    $stmt_user->bind_param("i", $_SESSION['user_id']);
+    $stmt_user->execute();
+    $result_user = $stmt_user->get_result();
+    $user_data = $result_user->fetch_assoc();
+    $stmt_user->close();
+    $conn_local->close();
+}
+
+// Ensure $user_data has default values if not logged in or user_id invalid
+if (!$user_data) {
+    $user_data = ['nama' => 'Guest', 'foto_profil' => ''];
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -27,6 +48,8 @@ require_once 'config.php'; // This must be the very first line.
             color: white;
             padding: 1rem 0;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 1000;
         }
 
         nav {
@@ -47,15 +70,19 @@ require_once 'config.php'; // This must be the very first line.
             display: flex;
             list-style: none;
             gap: 2rem;
+            align-items: center;
         }
 
         .nav-links a {
             color: white;
             text-decoration: none;
             transition: color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
         }
 
         .nav-links a:hover {
+            background: rgba(255,255,255,0.1);
             color: #f0e68c;
         }
 
@@ -76,6 +103,145 @@ require_once 'config.php'; // This must be the very first line.
 
         .nav-user a:hover {
             background: rgba(255,255,255,0.1);
+        }
+
+        /* Dropdown Styles */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dropdown-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .dropdown-toggle::after {
+            content: '▼';
+            font-size: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown.active .dropdown-toggle::after {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            min-width: 180px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border-radius: 8px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 2000;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .dropdown.active .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-menu a.dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color 0.2s ease;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .dropdown-menu a.dropdown-item .icon {
+            fill: #333;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Profile Dropdown Specific Styles */
+        .profile-dropdown {
+            position: relative;
+        }
+
+        .profile-toggle {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid white;
+            object-fit: cover;
+        }
+
+        .profile-name {
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .profile-dropdown .dropdown-menu {
+            right: 0;
+            left: auto;
+            min-width: 200px;
+        }
+
+        .dropdown-item.logout {
+            color: #dc3545;
+            font-weight: 500;
+        }
+
+        .dropdown-item.logout:hover {
+            background-color: #fff5f5;
+        }
+
+        /* Icon styles */
+        .icon {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+            flex-shrink: 0;
         }
 
         /* Main Content */
@@ -101,17 +267,15 @@ require_once 'config.php'; // This must be the very first line.
             border-radius: 15px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.1);
             padding: 2.5rem;
-            text-align: center;
+            text-align: center; /* Center content */
         }
 
-        .contact-content p {
-            margin-bottom: 1rem;
-            color: #444;
-            line-height: 1.7;
+        .contact-content h2 {
+            color: #D2691E;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
         }
-
         .contact-info {
-            display: flex;
             flex-direction: column;
             gap: 1rem;
             margin-top: 2rem;
@@ -130,16 +294,26 @@ require_once 'config.php'; // This must be the very first line.
             color: #D2691E;
         }
 
-        .contact-map {
+        .contact-item {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            color: #444;
+        }
+
+        .contact-item strong {
+            color: #8B4513;
+        }
+
+        .map-container {
             margin-top: 2rem;
             border-radius: 10px;
             overflow: hidden;
-            border: 1px solid #ddd;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        .contact-map iframe {
+        .map-container iframe {
             width: 100%;
-            height: 350px;
+            height: 400px; /* Adjust height as needed */
             border: 0;
         }
 
@@ -197,6 +371,11 @@ require_once 'config.php'; // This must be the very first line.
             .contact-content {
                 padding: 1.5rem;
             }
+            .profile-name { display: none; }
+            .dropdown-menu { left: auto; right: 0; }
+            .map-container iframe {
+                height: 300px;
+            }
         }
     </style>
 </head>
@@ -212,9 +391,52 @@ require_once 'config.php'; // This must be the very first line.
             </ul>
             <div class="nav-user">
                 <?php if (isLoggedIn()): ?>
-                    <a href="cart.php">🛒 Keranjang</a>
-                    <a href="riwayat.php">Riwayat</a>
-                    <a href="profile.php">Halo, <?php echo htmlspecialchars($_SESSION['nama']); ?>!</a> <a href="logout.php">Keluar</a>
+                <div class="dropdown" id="pesananDropdown">
+                    <button class="dropdown-toggle">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M7 4V2C7 1.45 7.45 1 8 1H16C16.55 1 17 1.45 17 2V4H20C20.55 4 21 4.45 21 5S20.55 6 20 6H19V19C19 20.1 18.1 21 17 21H7C5.9 21 5 20.1 5 19V6H4C3.45 6 3 5.55 3 5S3.45 4 4 4H7ZM9 3V4H15V3H9ZM7 6V19H17V6H7Z"/>
+                        </svg>
+                        Pesanan
+                    </button>
+                    <div class="dropdown-menu">
+                        <a href="cart.php" class="dropdown-item">
+                            <svg class="icon" style="width: 16px; height: 16px; margin-right: 8px;" viewBox="0 0 24 24">
+                                <path d="M17,18C17.56,18 18,17.56 18,17V5C18,4.44 17.56,4 17,4H7C6.44,4 6,4.44 6,5V17C6,17.56 6.44,18 7,18H17M17,2A2,2 0 0,1 19,4V18A2,2 0 0,1 17,20H7C6.46,20 5.96,19.79 5.59,19.41C5.21,19.04 5,18.53 5,18V4A2,2 0 0,1 7,2H17Z"/>
+                            </svg>
+                            Keranjang
+                        </a>
+                        <a href="riwayat.php" class="dropdown-item">
+                            <svg class="icon" style="width: 16px; height: 16px; margin-right: 8px;" viewBox="0 0 24 24">
+                                <path d="M13.5,8H12V13L16.28,15.54L17,14.33L13.5,12.25V8M13,3A9,9 0 0,0 4,12H1L4.96,16.03L9,12H6A7,7 0 0,1 13,5A7,7 0 0,1 20,12A7,7 0 0,1 13,19C11.07,19 9.32,18.21 8.06,16.94L6.64,18.36C8.27,20 10.5,21 13,21A9,9 0 0,0 22,12A9,9 0 0,0 13,3"/>
+                            </svg>
+                            Riwayat
+                        </a>
+                    </div>
+                </div>
+
+                <div class="dropdown profile-dropdown" id="profileDropdown">
+                    <button class="profile-toggle">
+                        <img src="<?php echo ($user_data['foto_profil'] && file_exists($upload_dir . $user_data['foto_profil'])) ? $upload_dir . htmlspecialchars($user_data['foto_profil']) : $upload_dir . 'default.png'; ?>" alt="Profile" class="profile-avatar">
+                        <span class="profile-name"><?php echo htmlspecialchars($user_data['nama']); ?></span>
+                        <svg class="icon" style="width: 14px; height: 14px;" viewBox="0 0 24 24">
+                            <path d="M7,10L12,15L17,10H7Z"/>
+                        </svg>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a href="profile.php" class="dropdown-item">
+                            <svg class="icon" style="width: 16px; height: 16px; margin-right: 8px;" viewBox="0 0 24 24">
+                                <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>
+                            </svg>
+                            Profil Saya
+                        </a>
+                        <a href="logout.php" class="dropdown-item logout">
+                            <svg class="icon" style="width: 16px; height: 16px; margin-right: 8px;" viewBox="0 0 24 24">
+                                <path d="M16,17V14H9V10H16V7L21,12L16,17M14,2A2,2 0 0,1 16,4V6H14V4H5V20H14V18H16V20A2,2 0 0,1 14,22H5A2,2 0 0,1 3,20V4A2,2 0 0,1 5,2H14Z"/>
+                            </svg>
+                            Keluar
+                        </a>
+                    </div>
+                </div>
                 <?php else: ?>
                     <a href="login.php">Masuk</a>
                     <a href="register.php">Daftar</a>
@@ -225,19 +447,16 @@ require_once 'config.php'; // This must be the very first line.
 
     <main>
         <div class="page-header">
-            <h1>Kontak Kami</h1>
-            <p>Kami senang mendengar dari Anda! Hubungi kami untuk pertanyaan atau saran.</p>
+            <h1>Hubungi Kami</h1>
+            <p>Kami siap melayani Anda</p>
         </div>
-
-        <div class="contact-content">
-            <p>Jangan ragu untuk menghubungi kami melalui informasi di bawah ini atau kunjungi toko fisik kami.</p>
 
             <div class="contact-info">
                 <div class="contact-item">
-                    📍 <strong>Alamat:</strong> Jalan Roti Lezat No. 123, Kota Nikmat, 12345
+                    📍 <strong>Alamat:</strong> Pokoh, wedomartani, Ngemplak, Sleman, Yogyakarta
                 </div>
                 <div class="contact-item">
-                    📞 <strong>Telepon:</strong> (021) 123-4567
+                    📞 <strong>Telepon:</strong> +62 85700296016 
                 </div>
                 <div class="contact-item">
                     📧 <strong>Email:</strong> info@tokorotiemak.com
@@ -245,10 +464,14 @@ require_once 'config.php'; // This must be the very first line.
                 <div class="contact-item">
                     ⏰ <strong>Jam Buka:</strong> Senin - Sabtu: 08.00 - 20.00 WIB
                 </div>
+                <div class="contact-item" style="margin-top: 1rem;">
+                📍 <strong>Alamat:</strong> Pokoh, Wedomartani, Ngemplak, Sleman, Yogyakarta
+                </div>
             </div>
 
-            <div class="contact-map">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.398934789523!2d106.8227093147699!3d-6.20876399550756!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f43c2d4a7c03%3A0x7d2b4d4b1a1b1a1b!2sMonumen%20Nasional!5e0!3m2!1sen!2sid!4v1678888888888!5m2!1sen!2sid" width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            
+            <div class="map-container">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3953.518683508119!2d110.42168977499895!3d-7.734992992280287!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a5996f0d92237%3A0x7d72c1c6e1e8b28!2sPokoh%2C%20Wedomartani%2C%20Kec.%20Ngemplak%2C%20Kabupaten%20Sleman%2C%20Daerah%20Istimewa%20Yogyakarta!5e0!3m2!1sid!2sid!4v1719468500000!5m2!1sid!2sid" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
         </div>
     </main>
@@ -264,5 +487,58 @@ require_once 'config.php'; // This must be the very first line.
             <p>© 2024 Toko Roti Emak. Dibuat dengan cinta untuk keluarga Indonesia.</p>
         </div>
     </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropdowns = document.querySelectorAll('.dropdown, .profile-dropdown');
+            
+            dropdowns.forEach(dropdown => {
+                const toggle = dropdown.querySelector('.dropdown-toggle, .profile-toggle');
+                const menu = dropdown.querySelector('.dropdown-menu');
+                
+                if (toggle) {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Cek apakah dropdown ini sudah aktif
+                    const isActive = dropdown.classList.contains('active');
+
+                    // Tutup semua dropdown lain terlebih dahulu
+                    dropdowns.forEach(otherDropdown => {
+                        otherDropdown.classList.remove('active');
+                    });
+                    
+                    // Jika dropdown yang diklik belum aktif, aktifkan
+                    if (!isActive) {
+                        dropdown.classList.add('active');
+                    }
+                });
+            }
+        });
+            
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function(e) {
+                dropdowns.forEach(dropdown => {
+                    // Jika area yang diklik bukan bagian dari dropdown, tutup dropdown tersebut
+                    if (!dropdown.contains(e.target)) {
+                        dropdown.classList.remove('active');
+                    }
+                });
+            });
+
+            
+            // Prevent dropdown from closing when clicking inside menu
+            const logoutButton = document.querySelector('.dropdown-item.logout');
+            if (logoutButton) {
+                logoutButton.addEventListener('click', function(e) {
+                    if (e.target.getAttribute('href') === 'logout.php') {
+                        if (!confirm('Apakah Anda yakin ingin keluar?')) {
+                            e.preventDefault();
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
